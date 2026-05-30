@@ -1,12 +1,12 @@
-# SIMAMI-RS Ultimate Premium
+# SIMAMI-RS
 
-SIMAMI-RS Ultimate Premium adalah aplikasi web fullstack untuk manajemen aset, inventaris, peminjaman, approval, QR Code, mutasi, dan maintenance alat medis rumah sakit.
+SIMAMI-RS adalah aplikasi web fullstack untuk manajemen aset, inventaris, peminjaman, approval, QR Code, mutasi, dan maintenance alat medis rumah sakit.
 
 Versi ini berfokus pada tampilan premium, user friendly, dan pengalaman visual yang lebih kuat.
 
 ## Peningkatan Versi Ultimate
 
-- UI lebih premium dengan glassmorphism, gradient, soft shadow, dan layout modern.
+- UI premium dengan glassmorphism, gradient, soft shadow, dan layout modern.
 - Sidebar kiri tetap diam saat konten kanan discroll.
 - Portal admin, petugas, dan teknisi tetap terpisah berdasarkan role.
 - Menu berubah otomatis sesuai role.
@@ -14,9 +14,9 @@ Versi ini berfokus pada tampilan premium, user friendly, dan pengalaman visual y
 - Dashboard admin dibuat seperti command center.
 - Portal petugas dibuat seperti aplikasi internal premium.
 - Katalog alat dibuat seperti marketplace internal rumah sakit.
-- Card aset lebih visual dan memanjakan mata.
+- Card aset visual dan memanjakan mata.
 - Timeline peminjaman lebih rapi.
-- Modal, form, search bar, badge, dan statistic card diperhalus.
+- Modal, form, search bar, badge, dan statistic card halus.
 - Tetap responsif untuk desktop, tablet, dan mobile.
 
 ## Akun Login Demo
