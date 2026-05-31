@@ -1,5 +1,5 @@
 import { Html5Qrcode } from "html5-qrcode";
-import { Camera, CheckCircle2 } from "lucide-react";
+import { Camera, CheckCircle2, StopCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import FormInput from "../components/ui/FormInput.jsx";
 import PageHeader from "../components/ui/PageHeader.jsx";
@@ -12,8 +12,14 @@ export default function ScanQR() {
   const [scanning, setScanning] = useState(false);
   const [asset, setAsset] = useState(null);
   const [message, setMessage] = useState("");
-  const [form, setForm] = useState({ toLocation: "IGD", note: "", officer: "Petugas Bangsal", status: "Belum kembali" });
+  const [form, setForm] = useState({
+    toLocation: "IGD",
+    note: "",
+    officer: "Petugas Bangsal",
+    status: "Belum kembali"
+  });
   const qrRef = useRef(null);
+  const scanningRef = useRef(false); // ref untuk hindari stale closure
 
   function resolveAsset(rawText) {
     try {
@@ -27,6 +33,8 @@ export default function ScanQR() {
   async function startScanner() {
     setMessage("");
     setScanning(true);
+    scanningRef.current = true;
+
     const scanner = new Html5Qrcode("qr-reader");
     qrRef.current = scanner;
 
@@ -39,24 +47,33 @@ export default function ScanQR() {
           if (found) {
             setAsset(found);
             setMessage("Scan berhasil.");
-            await scanner.stop();
+            await scanner.stop().catch(() => {});
+            scanningRef.current = false;
             setScanning(false);
           } else {
             setMessage("QR terbaca, tetapi aset tidak ditemukan.");
           }
         }
       );
-    } catch (error) {
+    } catch {
+      scanningRef.current = false;
       setScanning(false);
       setMessage("Kamera tidak bisa diakses. Pastikan izin kamera aktif atau gunakan simulasi scan.");
     }
   }
 
   async function stopScanner() {
-    if (qrRef.current && scanning) {
-      await qrRef.current.stop();
-      setScanning(false);
+    if (qrRef.current && scanningRef.current) {
+      try {
+        await qrRef.current.stop();
+      } catch {
+        // scanner mungkin sudah berhenti
+      }
+      qrRef.current = null;
     }
+    scanningRef.current = false;
+    setScanning(false);
+    setMessage("Scan dihentikan.");
   }
 
   function simulateScan() {
@@ -82,71 +99,145 @@ export default function ScanQR() {
     setMessage("Transaksi mutasi berhasil disimpan.");
   }
 
+  // Cleanup saat komponen unmount
   useEffect(() => {
     return () => {
-      if (qrRef.current && scanning) {
+      if (qrRef.current && scanningRef.current) {
         qrRef.current.stop().catch(() => {});
       }
     };
-  }, [scanning]);
+  }, []);
 
   return (
     <div>
-      <PageHeader title="Scan QR Code" description="Pindai QR Code menggunakan kamera perangkat untuk melihat detail aset dan mencatat mutasi atau peminjaman antar unit." />
+      <PageHeader
+        title="Scan QR Code"
+        description="Pindai QR Code menggunakan kamera perangkat untuk melihat detail aset dan mencatat mutasi atau peminjaman antar unit."
+      />
 
       <div className="grid gap-6 xl:grid-cols-3">
-        <div className="rounded-3xl border border-slate-200 bg-slate-950 p-5 text-white shadow-sm xl:col-span-2">
-          <div className="relative min-h-[420px] overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 to-emerald-950 p-4">
-            <div id="qr-reader" className="mx-auto max-w-lg overflow-hidden rounded-3xl" />
+        {/* Scanner Panel */}
+        <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-900 xl:col-span-2">
+          {/* Tombol kontrol di atas — selalu terlihat */}
+          <div className="flex items-center justify-between border-b border-slate-700 px-5 py-3">
+            <p className="text-sm font-medium text-slate-300">Area Pemindaian Kamera</p>
+            {scanning ? (
+              <button
+                onClick={stopScanner}
+                className="inline-flex items-center gap-1.5 rounded-md bg-rose-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-rose-500"
+              >
+                <StopCircle size={14} />
+                Hentikan Scan
+              </button>
+            ) : (
+              <div className="flex gap-2">
+                <button
+                  onClick={startScanner}
+                  className="inline-flex items-center gap-1.5 rounded-md bg-teal-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-teal-500"
+                >
+                  <Camera size={14} />
+                  Mulai Scan
+                </button>
+                <button
+                  onClick={simulateScan}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-slate-600 px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-800"
+                >
+                  Simulasikan Scan
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Area kamera — div #qr-reader SELALU ada di DOM */}
+          <div className="relative min-h-[380px] p-5">
+            {/* div ini harus selalu ada agar Html5Qrcode bisa attach */}
+            <div id="qr-reader" className="mx-auto max-w-lg overflow-hidden rounded-lg" />
+
+            {/* Overlay placeholder saat tidak sedang scan */}
             {!scanning && (
-              <div className="grid min-h-[380px] place-items-center text-center">
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center">
+                <div className="grid h-16 w-16 place-items-center rounded-lg bg-white/10">
+                  <Camera size={32} className="text-slate-300" />
+                </div>
                 <div>
-                  <div className="mx-auto grid h-20 w-20 place-items-center rounded-3xl bg-white/10 backdrop-blur">
-                    <Camera size={36} />
-                  </div>
-                  <h2 className="mt-5 text-xl font-bold">Area Pemindaian QR</h2>
-                  <p className="mt-2 max-w-md text-sm leading-6 text-slate-300">Arahkan kamera ke stiker QR aset. Untuk laptop tanpa kamera, gunakan simulasi scan.</p>
-                  <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-                    <button onClick={startScanner} className="rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-bold text-white hover:bg-emerald-400">Mulai Scan Kamera</button>
-                    <button onClick={simulateScan} className="rounded-2xl border border-white/20 px-5 py-3 text-sm font-bold text-white hover:bg-white/10">Simulasikan Scan</button>
-                  </div>
+                  <h2 className="text-base font-semibold text-white">Area Pemindaian QR</h2>
+                  <p className="mt-1 max-w-sm text-sm text-slate-400">
+                    Arahkan kamera ke stiker QR aset. Untuk laptop tanpa kamera, gunakan simulasi scan.
+                  </p>
                 </div>
               </div>
             )}
-            {scanning && <button onClick={stopScanner} className="mt-4 rounded-2xl bg-rose-500 px-5 py-3 text-sm font-bold text-white">Hentikan Scan</button>}
           </div>
+
+          {/* Pesan status */}
+          {message && (
+            <div className="border-t border-slate-700 px-5 py-3 text-sm font-medium text-slate-300">
+              {message}
+            </div>
+          )}
         </div>
 
-        <form onSubmit={handleSubmit} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 className="font-bold text-slate-950">Hasil Scan</h2>
-          {message && <div className="mt-4 rounded-2xl bg-emerald-50 p-4 text-sm font-semibold text-emerald-700">{message}</div>}
+        {/* Hasil Scan + Form */}
+        <form onSubmit={handleSubmit} className="rounded-lg border border-slate-200 bg-white p-5">
+          <h2 className="font-semibold text-slate-900">Hasil Scan</h2>
 
           {!asset ? (
-            <div className="mt-5 rounded-3xl bg-slate-50 p-5 text-sm leading-6 text-slate-500">Belum ada QR Code yang terbaca.</div>
+            <div className="mt-4 rounded-md bg-slate-50 p-4 text-sm text-slate-500">
+              Belum ada QR Code yang terbaca.
+            </div>
           ) : (
-            <div className="mt-5 space-y-4">
-              <div className="rounded-2xl border border-slate-200 p-4">
+            <div className="mt-4 space-y-4">
+              <div className="rounded-md border border-slate-200 p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="font-bold text-slate-950">{asset.name}</p>
-                    <p className="text-sm text-slate-500">{asset.id} • {asset.location}</p>
+                    <p className="font-semibold text-slate-900">{asset.name}</p>
+                    <p className="mt-0.5 text-xs text-slate-500">
+                      {asset.id} • {asset.location}
+                    </p>
                   </div>
                   <StatusBadge value={asset.status} />
                 </div>
               </div>
 
-              <FormInput label="Petugas" value={form.officer} onChange={(e) => setForm({ ...form, officer: e.target.value })} />
-              <FormInput label="Mutasi ke lokasi" as="select" value={form.toLocation} onChange={(e) => setForm({ ...form, toLocation: e.target.value })}>
-                {locations.map((location) => <option key={location}>{location}</option>)}
+              <FormInput
+                label="Petugas"
+                value={form.officer}
+                onChange={(e) => setForm({ ...form, officer: e.target.value })}
+              />
+              <FormInput
+                label="Mutasi ke lokasi"
+                as="select"
+                value={form.toLocation}
+                onChange={(e) => setForm({ ...form, toLocation: e.target.value })}
+              >
+                {locations.map((loc) => (
+                  <option key={loc}>{loc}</option>
+                ))}
               </FormInput>
-              <FormInput label="Status transaksi" as="select" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+              <FormInput
+                label="Status transaksi"
+                as="select"
+                value={form.status}
+                onChange={(e) => setForm({ ...form, status: e.target.value })}
+              >
                 <option>Belum kembali</option>
                 <option>Dipakai</option>
                 <option>Selesai</option>
               </FormInput>
-              <FormInput label="Catatan" as="textarea" className="min-h-24 resize-none" value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} placeholder="Contoh: dipinjam untuk pasien observasi." />
-              <button className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-bold text-white hover:bg-emerald-700">
-                <CheckCircle2 size={18} /> Simpan Transaksi
+              <FormInput
+                label="Catatan"
+                as="textarea"
+                className="min-h-24 resize-none"
+                value={form.note}
+                onChange={(e) => setForm({ ...form, note: e.target.value })}
+                placeholder="Contoh: dipinjam untuk pasien observasi."
+              />
+              <button
+                type="submit"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-teal-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-teal-700"
+              >
+                <CheckCircle2 size={16} />
+                Simpan Transaksi
               </button>
             </div>
           )}

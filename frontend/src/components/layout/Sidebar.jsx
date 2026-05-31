@@ -1,7 +1,6 @@
 import {
   Activity,
   Camera,
-  ChevronRight,
   ClipboardList,
   FileBarChart,
   LayoutDashboard,
@@ -12,7 +11,6 @@ import {
   Settings,
   ShieldCheck,
   ShoppingBag,
-  Sparkles,
   Stethoscope,
   UserCheck,
   UserCog,
@@ -28,39 +26,37 @@ const roleMenus = {
     label: "Portal Admin",
     note: "Kontrol aset, approval, dan audit",
     items: [
-      { to: "/", label: "Dashboard Admin", icon: LayoutDashboard },
+      { to: "/", label: "Dashboard", icon: LayoutDashboard },
       { to: "/approvals", label: "Approval Peminjaman", icon: UserCheck },
       { to: "/assets", label: "Data Aset", icon: PackageCheck },
       { to: "/assets/new", label: "Tambah Aset", icon: Plus },
-      { to: "/assets/AST-RO-008", label: "Detail Aset", icon: ClipboardList },
-      { to: "/qr", label: "QR Code", icon: QrCode },
+      { to: "/qr", label: "QR Code Manager", icon: QrCode },
       { to: "/mutations", label: "Mutasi Aset", icon: Activity },
       { to: "/maintenance", label: "Maintenance", icon: Wrench },
       { to: "/reports", label: "Laporan", icon: FileBarChart },
       { to: "/users", label: "Manajemen User", icon: UserCog },
       { to: "/settings", label: "Pengaturan", icon: Settings },
-      { to: "/profile", label: "Profil", icon: ShieldCheck }
+      { to: "/profile", label: "Profil Saya", icon: ShieldCheck }
     ]
   },
   "Petugas Bangsal": {
     label: "Portal Petugas",
     note: "Peminjaman alat tanpa ribet",
     items: [
-      { to: "/portal", label: "Beranda Petugas", icon: ShoppingBag },
+      { to: "/portal", label: "Beranda", icon: ShoppingBag },
       { to: "/catalog", label: "Katalog Alat", icon: Stethoscope },
-      { to: "/my-borrows", label: "Peminjaman Saya", icon: UserCheck },
+      { to: "/my-borrows", label: "Peminjaman Saya", icon: ClipboardList },
       { to: "/scan", label: "Scan QR", icon: Camera },
-      { to: "/profile", label: "Profil", icon: ShieldCheck }
+      { to: "/profile", label: "Profil Saya", icon: ShieldCheck }
     ]
   },
   Teknisi: {
     label: "Portal Teknisi",
     note: "Maintenance dan validasi alat",
     items: [
-      { to: "/maintenance", label: "Maintenance", icon: Wrench },
-      { to: "/scan", label: "Scan QR", icon: Camera },
-      { to: "/assets/AST-RO-008", label: "Detail Aset", icon: ClipboardList },
-      { to: "/profile", label: "Profil", icon: ShieldCheck }
+      { to: "/maintenance", label: "Jadwal Maintenance", icon: Wrench },
+      { to: "/scan", label: "Scan QR Aset", icon: Camera },
+      { to: "/profile", label: "Profil Saya", icon: ShieldCheck }
     ]
   }
 };
@@ -72,50 +68,43 @@ export default function Sidebar({ open, setOpen }) {
   return (
     <aside
       className={cn(
-        "fixed inset-y-0 left-0 z-40 flex h-screen w-80 shrink-0 transform flex-col border-r border-white/30 bg-slate-950 text-white shadow-2xl transition-transform duration-300 lg:sticky lg:top-0 lg:translate-x-0",
+        "fixed inset-y-0 left-0 z-40 flex h-screen w-64 shrink-0 transform flex-col border-r border-slate-800 bg-slate-900 text-white transition-transform duration-300 lg:sticky lg:top-0 lg:translate-x-0",
         open ? "translate-x-0" : "-translate-x-full"
       )}
     >
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-16 top-8 h-52 w-52 rounded-full bg-emerald-400/20 blur-3xl" />
-        <div className="absolute -right-24 top-40 h-64 w-64 rounded-full bg-sky-400/15 blur-3xl" />
-        <div className="absolute bottom-0 left-10 h-64 w-64 rounded-full bg-teal-400/10 blur-3xl" />
-      </div>
-
-      <div className="relative flex h-20 shrink-0 items-center justify-between px-5">
-        <div className="flex items-center gap-3">
-          <div className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-lg shadow-emerald-950/30 ring-1 ring-white/20">
-            <Stethoscope size={24} />
+      {/* Logo */}
+      <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-800 px-5">
+        <div className="flex items-center gap-2.5">
+          <div className="grid h-8 w-8 place-items-center rounded-md bg-teal-600 text-white">
+            <Stethoscope size={16} />
           </div>
           <div>
-            <p className="text-base font-black tracking-tight">SIMAMI-RS</p>
-            <p className="text-xs text-emerald-100/75">Permata Medika Asset Suite</p>
+            <p className="text-sm font-bold tracking-tight">SIMAMI-RS</p>
+            <p className="text-[10px] text-slate-500">Permata Medika</p>
           </div>
         </div>
-        <button onClick={() => setOpen(false)} className="rounded-xl p-2 text-white/70 hover:bg-white/10 lg:hidden">
-          <X size={18} />
+        <button
+          onClick={() => setOpen(false)}
+          className="rounded-md p-1.5 text-slate-500 hover:bg-slate-800 hover:text-slate-300 lg:hidden"
+        >
+          <X size={16} />
         </button>
       </div>
 
-      <div className="relative shrink-0 px-4 pb-4">
-        <div className="overflow-hidden rounded-[1.7rem] border border-white/10 bg-white/10 p-4 shadow-lg backdrop-blur">
-          <div className="flex items-start gap-3">
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-emerald-400/20 text-emerald-200 ring-1 ring-emerald-300/20">
-              <Sparkles size={19} />
-            </div>
-            <div>
-              <p className="text-sm font-black">{menu.label}</p>
-              <p className="mt-1 text-xs leading-5 text-white/65">{menu.note}</p>
-            </div>
-          </div>
+      {/* Role Badge */}
+      <div className="shrink-0 px-4 py-3">
+        <div className="rounded-md bg-slate-800 px-3 py-2">
+          <p className="text-xs font-semibold text-slate-300">{menu.label}</p>
+          <p className="mt-0.5 text-[11px] text-slate-500">{menu.note}</p>
         </div>
       </div>
 
-      <nav className="premium-scrollbar relative min-h-0 flex-1 overflow-y-auto px-4 pb-4">
-        <p className="px-3 pb-2 pt-2 text-[11px] font-black uppercase tracking-[0.22em] text-white/40">
-          Menu {user?.role}
+      {/* Nav */}
+      <nav className="premium-scrollbar min-h-0 flex-1 overflow-y-auto px-3 pb-3">
+        <p className="px-2 pb-2 pt-1 text-[10px] font-semibold uppercase tracking-widest text-slate-600">
+          Menu
         </p>
-        <div className="space-y-1.5">
+        <div className="space-y-0.5">
           {menu.items.map((item) => (
             <NavLink
               key={item.to}
@@ -124,20 +113,23 @@ export default function Sidebar({ open, setOpen }) {
               onClick={() => setOpen(false)}
               className={({ isActive }) =>
                 cn(
-                  "group relative flex items-center gap-3 overflow-hidden rounded-2xl px-3 py-3 text-sm font-bold transition",
+                  "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   isActive
-                    ? "bg-white text-slate-950 shadow-lg shadow-black/20"
-                    : "text-white/70 hover:bg-white/10 hover:text-white"
+                    ? "bg-teal-600 text-white"
+                    : "text-slate-400 hover:bg-slate-800 hover:text-slate-100"
                 )
               }
             >
               {({ isActive }) => (
                 <>
-                  <div className={cn("grid h-9 w-9 shrink-0 place-items-center rounded-xl transition", isActive ? "bg-emerald-50 text-emerald-700" : "bg-white/10 text-white/70 group-hover:bg-white/15 group-hover:text-white")}>
-                    <item.icon size={18} />
-                  </div>
+                  <item.icon
+                    size={16}
+                    className={cn(
+                      "shrink-0 transition-colors",
+                      isActive ? "text-teal-100" : "text-slate-500 group-hover:text-slate-300"
+                    )}
+                  />
                   <span className="min-w-0 flex-1 truncate">{item.label}</span>
-                  <ChevronRight size={16} className={cn("transition", isActive ? "text-emerald-600" : "text-white/30 group-hover:text-white/70")} />
                 </>
               )}
             </NavLink>
@@ -145,24 +137,26 @@ export default function Sidebar({ open, setOpen }) {
         </div>
       </nav>
 
-      <div className="relative shrink-0 border-t border-white/10 p-4">
-        <div className="flex items-center gap-3 rounded-[1.5rem] border border-white/10 bg-white/10 p-3 backdrop-blur">
-          <div className="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-emerald-300 to-cyan-400 font-black text-slate-950">
+      {/* User */}
+      <div className="shrink-0 border-t border-slate-800 p-3">
+        <div className="flex items-center gap-3 rounded-md px-2 py-2">
+          <div className="grid h-8 w-8 shrink-0 place-items-center rounded-md bg-teal-700 text-xs font-bold text-white">
             {user?.name?.slice(0, 2).toUpperCase() || "AD"}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-black">{user?.name}</p>
-            <p className="truncate text-xs text-white/55">{user?.role}</p>
+            <p className="truncate text-sm font-semibold text-slate-200">{user?.name}</p>
+            <p className="truncate text-xs text-slate-500">{user?.role}</p>
           </div>
           <button
             onClick={logout}
             title="Keluar"
-            className="rounded-xl p-2 text-white/55 hover:bg-white/10 hover:text-rose-200"
+            className="rounded-md p-1.5 text-slate-500 hover:bg-slate-800 hover:text-rose-400"
           >
-            <LogOut size={18} />
+            <LogOut size={15} />
           </button>
         </div>
       </div>
     </aside>
   );
 }
+
