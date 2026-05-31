@@ -12,11 +12,7 @@ html {
 
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at 10% 10%, rgba(16, 185, 129, 0.16), transparent 28%),
-    radial-gradient(circle at 90% 8%, rgba(59, 130, 246, 0.13), transparent 30%),
-    radial-gradient(circle at 50% 100%, rgba(20, 184, 166, 0.12), transparent 35%),
-    #eef5f3;
+  background-color: #f8fafc; /* slate-50 */
   color: #0f172a;
 }
 
@@ -25,11 +21,12 @@ body {
 }
 
 ::selection {
-  background: rgba(16, 185, 129, 0.25);
+  background: rgba(13, 148, 136, 0.2); /* teal-600 */
 }
 
+/* Scrollbar */
 .premium-scrollbar::-webkit-scrollbar {
-  width: 10px;
+  width: 6px;
 }
 
 .premium-scrollbar::-webkit-scrollbar-track {
@@ -37,50 +34,20 @@ body {
 }
 
 .premium-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(15, 23, 42, 0.16);
+  background: rgba(15, 23, 42, 0.14);
   border-radius: 999px;
-  border: 3px solid transparent;
-  background-clip: padding-box;
 }
 
 .premium-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(15, 23, 42, 0.28);
-  border: 3px solid transparent;
-  background-clip: padding-box;
+  background: rgba(15, 23, 42, 0.26);
 }
 
-.premium-card {
-  border: 1px solid rgba(255, 255, 255, 0.72);
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 22px 70px rgba(15, 23, 42, 0.08);
-  backdrop-filter: blur(18px);
-}
-
-.premium-dark {
-  background:
-    radial-gradient(circle at 15% 0%, rgba(52, 211, 153, 0.28), transparent 32%),
-    radial-gradient(circle at 90% 18%, rgba(56, 189, 248, 0.2), transparent 28%),
-    linear-gradient(135deg, #020617, #064e3b 58%, #0f766e);
-}
-
-.subtle-grid {
-  background-image:
-    linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
-  background-size: 28px 28px;
-}
-
-.float-soft {
-  animation: floatSoft 7s ease-in-out infinite;
-}
-
-@keyframes floatSoft {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+/* Sticky table header utility */
+.table-sticky thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #f8fafc;
 }
 
 @media print {

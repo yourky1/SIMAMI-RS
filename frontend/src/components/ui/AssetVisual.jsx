@@ -1,4 +1,4 @@
-import { Activity, Armchair, Gauge, HeartPulse, Monitor, Sparkles, Stethoscope, Wind, Zap } from "lucide-react";
+import { Activity, Armchair, Gauge, HeartPulse, Monitor, Stethoscope, Wind, Zap } from "lucide-react";
 
 const visualMap = {
   oxygen: { icon: Wind, gradient: "from-sky-500 via-cyan-500 to-emerald-500", label: "O₂", glow: "shadow-sky-200" },
@@ -16,21 +16,18 @@ export default function AssetVisual({ type = "default", className = "" }) {
   const Icon = config.icon;
 
   return (
-    <div className={`relative overflow-hidden rounded-[1.7rem] bg-gradient-to-br ${config.gradient} p-5 text-white shadow-xl ${config.glow} ${className}`}>
-      <div className="absolute -right-8 -top-10 h-32 w-32 rounded-full bg-white/18 blur-xl" />
-      <div className="absolute -bottom-12 left-8 h-36 w-36 rounded-full bg-white/12 blur-xl" />
-      <div className="absolute inset-0 bg-[linear-gradient(130deg,rgba(255,255,255,0.24),transparent_35%,rgba(255,255,255,0.09))]" />
-      <div className="relative flex h-full min-h-32 flex-col justify-between">
-        <div className="flex items-center justify-between">
-          <div className="grid h-12 w-12 place-items-center rounded-2xl bg-white/18 backdrop-blur ring-1 ring-white/20">
-            <Icon size={28} />
-          </div>
-          <Sparkles size={18} className="text-white/65" />
+    <div className={`relative overflow-hidden rounded-lg bg-gradient-to-br ${config.gradient} text-white ${className}`}>
+      {/* subtle gloss overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.22),transparent_50%)]" />
+      {/* Icon centered */}
+      <div className="relative flex h-full w-full items-center justify-center">
+        <div className="grid place-items-center rounded-full bg-white/20 p-3 ring-1 ring-white/30">
+          <Icon size={22} />
         </div>
-        <div>
-          <p className="text-5xl font-black tracking-tight drop-shadow-sm">{config.label}</p>
-          <p className="text-xs font-black uppercase tracking-[0.28em] text-white/75">Medical Asset</p>
-        </div>
+      </div>
+      {/* Label chip — bottom left */}
+      <div className="absolute bottom-1.5 left-1.5 rounded bg-black/25 px-1.5 py-0.5 text-[9px] font-bold tracking-wider text-white/90">
+        {config.label}
       </div>
     </div>
   );

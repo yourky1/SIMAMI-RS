@@ -7,16 +7,11 @@ export default function AppLayout() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="h-screen overflow-hidden bg-slate-100 text-slate-900">
-      <div className="pointer-events-none fixed inset-0 -z-10 subtle-grid opacity-80" />
-      <div className="pointer-events-none fixed -left-28 top-20 -z-10 h-96 w-96 rounded-full bg-emerald-300/30 blur-3xl" />
-      <div className="pointer-events-none fixed -right-24 top-0 -z-10 h-96 w-96 rounded-full bg-sky-300/25 blur-3xl" />
-      <div className="pointer-events-none fixed bottom-0 left-1/2 -z-10 h-96 w-96 -translate-x-1/2 rounded-full bg-teal-300/20 blur-3xl" />
-
+    <div className="h-screen overflow-hidden bg-slate-50 text-slate-900">
       {open && (
         <button
           aria-label="Tutup sidebar"
-          className="fixed inset-0 z-30 bg-slate-950/45 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-30 bg-slate-950/40 lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}
@@ -37,3 +32,4 @@ export default function AppLayout() {
     </div>
   );
 }
+
