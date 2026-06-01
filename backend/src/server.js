@@ -39,6 +39,13 @@ app.use("/api/users", userRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(port, () => {
-  console.log(`SIMAMI-RS API berjalan di http://localhost:${port}`);
-});
+app.use(notFound);
+app.use(errorHandler);
+
+export default app;
+
+if (!process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log(`SIMAMI-RS API berjalan di http://localhost:${port}`);
+  });
+}
