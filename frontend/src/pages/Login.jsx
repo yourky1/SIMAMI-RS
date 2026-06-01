@@ -34,14 +34,16 @@ export default function Login() {
   });
   const [error, setError] = useState("");
 
-  function handleSubmit(event) {
-    event.preventDefault();
-    try {
-      login(form);
-    } catch (err) {
-      setError(err.message);
-    }
+ async function handleSubmit(event) {
+  event.preventDefault();
+  setError("");
+
+  try {
+    await login(form);
+  } catch (err) {
+    setError(err.message || "Login gagal. Periksa koneksi ke server.");
   }
+}
 
   function chooseAccount(account) {
     setForm({ email: account.email, password: account.password });
