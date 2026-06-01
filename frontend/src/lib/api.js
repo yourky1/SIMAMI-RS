@@ -12,6 +12,14 @@ export async function apiRequest(path, options = {}) {
     }
   });
 
+  // Token tidak valid / expired → hapus dan paksa login ulang
+  if (response.status === 401) {
+    localStorage.removeItem("simami_token");
+    localStorage.removeItem("simami_user");
+    window.location.href = "/login";
+    return;
+  }
+
   const payload = await response.json().catch(() => ({}));
 
   if (!response.ok) {
@@ -20,3 +28,4 @@ export async function apiRequest(path, options = {}) {
 
   return payload;
 }
+

@@ -47,7 +47,7 @@ export default function ScanQR() {
           if (found) {
             setAsset(found);
             setMessage("Scan berhasil.");
-            await scanner.stop().catch(() => {});
+            await scanner.stop().catch(() => { });
             scanningRef.current = false;
             setScanning(false);
           } else {
@@ -103,7 +103,7 @@ export default function ScanQR() {
   useEffect(() => {
     return () => {
       if (qrRef.current && scanningRef.current) {
-        qrRef.current.stop().catch(() => {});
+        qrRef.current.stop().catch(() => { });
       }
     };
   }, []);

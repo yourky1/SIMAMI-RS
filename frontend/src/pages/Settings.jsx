@@ -1,9 +1,9 @@
-import { Bell, Building2, Database, ShieldCheck } from "lucide-react";
+import { Bell, Building2, Database, RefreshCw, ShieldCheck } from "lucide-react";
 import PageHeader from "../components/ui/PageHeader.jsx";
 import { useData } from "../context/DataContext.jsx";
 
 export default function Settings() {
-  const { resetDemoData } = useData();
+  const { refetch } = useData();
 
   const settings = [
     ["Keamanan akses", "Aktifkan verifikasi role dan pembatasan akses halaman berdasarkan jabatan pengguna.", ShieldCheck],
@@ -30,10 +30,12 @@ export default function Settings() {
         ))}
       </div>
 
-      <div className="mt-6 rounded-3xl border border-rose-200 bg-white p-5 shadow-sm">
-        <h2 className="font-bold text-slate-950">Reset Data Demo</h2>
-        <p className="mt-1 text-sm text-slate-500">Mengembalikan data dummy seperti awal. Berguna saat demo sudah terlalu kreatif.</p>
-        <button onClick={resetDemoData} className="mt-4 rounded-2xl bg-rose-600 px-4 py-3 text-sm font-bold text-white">Reset Data</button>
+      <div className="mt-6 rounded-3xl border border-teal-200 bg-white p-5 shadow-sm">
+        <h2 className="font-bold text-slate-950">Refresh Data</h2>
+        <p className="mt-1 text-sm text-slate-500">Muat ulang semua data dari server (aset, mutasi, maintenance, peminjaman) secara langsung dari database Supabase.</p>
+        <button onClick={refetch} className="mt-4 inline-flex items-center gap-2 rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-teal-700">
+          <RefreshCw size={15} /> Refresh Data
+        </button>
       </div>
     </div>
   );
